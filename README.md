@@ -32,7 +32,7 @@ echo $table;
 
 ### Demo and Test
 
-http://jspit.de/check/phpcheck.class.table.php
+http://jspit.de/check/phpcheck.table.php
 
 ### Requirements
 
