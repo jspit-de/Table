@@ -3,7 +3,7 @@
 .---------------------------------------------------------------------------.
 |  class Table : HTML table builder                                         |
 |   Version: 1.0                                                            |
-|      Date: 05.04.2019                                                     |
+|      Date: 2019-04-17                                                     |
 | ------------------------------------------------------------------------- |
 | Copyright © 2019 Peter Junk                                               |
 ' ------------------------------------------------------------------------- '
@@ -27,7 +27,7 @@ class Table {
 
   
  /*
-  * @param mixed : array, object, iterator
+  * @param mixed $data : array, object, iterator
   */
   public function __construct($data){
     if(is_object($data)) {
@@ -58,15 +58,17 @@ class Table {
   
  /*
   * create a instance
-  * @param $data : 2 dim array, iterator or tableArray Instance
-  * @return instance of tableArray
+  * @param mixed $data : 2 dim array, iterator or tableArray Instance
+  * @return static instance of tableArray
   */
   public static function create($data){
     return new static($data);
   }
 
  /*
-  * @param string : css-class-name or attribute-list 
+  * set html-Attributes 
+  * @param string $list: css-class-name or attribute-list 
+  * @return $this
   */
   public function attribute($list){
     if(is_string($list) AND $list != "") {
@@ -82,7 +84,10 @@ class Table {
   }
   
  /*
-  * @param mixed : array or string
+  * set titles for columns
+  * @param mixed $title
+  * $title: Table::KEY, Table::FIRSTLINE, array or string with comma as delimiter
+  * @return $this
   */
   public function title($title){
     if(is_string($title)) {
@@ -105,7 +110,10 @@ class Table {
   }
   
  /*
-  * format
+  * set format for every column
+  * may use sprintf-formats and date/datetime-formats
+  * @param array $format: 
+  * @return $this
   */
   public function format(array $format){
     $this->formats = $format;
@@ -113,7 +121,9 @@ class Table {
   }
   
  /*
-  * @param array : array with true/false for quote html special chars
+  * set a mask if quote html special chars
+  * @param array $boolArr: array with true/false (default all true)
+  * @return $this
   */
   public function quoteSpecialChars($boolArr){
     $this->quotes = $boolArr;
@@ -121,7 +131,8 @@ class Table {
   }
 
  /*
-  * @param string: className for Colums
+  * @param string $className: className for Colums
+  * @return $this
   */
   public function colClassName($className){
     $this->colClassName = $className;
@@ -129,7 +140,8 @@ class Table {
   }
 
  /*
-  * @param string: className for rows
+  * @param string $className: className for rows
+  * @return $this
   */
   public function rowClassName($className){
     $this->rowClassName = $className;
@@ -139,6 +151,7 @@ class Table {
   
  /*
   * render and get HTML
+  * @return string : html
   */
   public function getHtml(){
     $html = $html = "\r\n<table ".$this->attributList.">";
@@ -209,12 +222,13 @@ class Table {
     return htmlspecialchars($val,ENT_QUOTES,'UTF-8',false);
   }
 
- /*
+ /* 
+  * get a valid string may use for a id-Attribute
+  * @param string $str
+  * comment:
   * ID and NAME tokens must begin with a letter ([A-Za-z]) 
   * and may be followed by any number of letters, 
   * digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"), and periods (".").
-  *
-  * liefert einen gesäuberten string für HTML-Id's 
   */  
   private function cleanID($str) {
     return preg_replace_callback(
