@@ -2,12 +2,11 @@
 /**
 .---------------------------------------------------------------------------.
 |  class Table : HTML table builder                                         |
-|   Version: 1.0                                                            |
-|      Date: 2019-04-17                                                     |
+|   Version: 1.3                                                            |
+|      Date: 2021-12-13                                                     |
 | ------------------------------------------------------------------------- |
 | Copyright © 2019 Peter Junk                                               |
 ' ------------------------------------------------------------------------- '
-| 1.0 : -                                                                   |
 | PHP : >= 5.6                                                              |
 ' ------------------------------------------------------------------------- '
 */
@@ -22,8 +21,8 @@ class Table {
   private $quotes = [];
   private $formats = [];
   
-  private $colClassName = 'Col_';
-  private $rowClassName = 'Row_';  
+  private $colClass = 'Col_';
+  private $rowClass = 'Row_';  
 
   
  /*
@@ -43,10 +42,19 @@ class Table {
       }
     }
     if(is_array($data)) {
-      if(is_array(reset($data))) {
+      $firstRow = reset($data);
+      if(is_array($firstRow)) {
         $this->data = $data;
       }
-      else {
+      elseif(is_scalar($firstRow)) {
+        //1 dim Array with key=>value to 2-dim-array
+        $newData = [];
+        foreach($data as $key => $value){
+          $newData[] = [$key,$value];
+        }
+        $this->data = $newData;       
+      }
+      else {  //object
         $this->data = json_decode(json_encode($data), true); 
       }
     }
@@ -135,7 +143,7 @@ class Table {
   * @return $this
   */
   public function colClassName($className){
-    $this->colClassName = $className;
+    $this->colClass = $className;
     return $this;
   }
 
@@ -144,11 +152,10 @@ class Table {
   * @return $this
   */
   public function rowClassName($className){
-    $this->rowClassName = $className;
+    $this->rowClass = $className;
     return $this;
   }
 
-  
  /*
   * render and get HTML
   * @return string : html
@@ -156,8 +163,8 @@ class Table {
   public function getHtml(){
     $html = $html = "\r\n<table ".$this->attributList.">";
     
-    $cn = $this->colClassName;
-    $rn = $this->rowClassName;
+    $cn = $this->colClass;
+    $rn = $this->rowClass;
     //thead
     if(!empty($this->title)) {
       $html .= "\r\n  <thead>\r\n    <tr>";
@@ -189,7 +196,15 @@ class Table {
     $html .= "\r\n</table>\r\n";
     return $html;
   }
-
+  
+ /**
+  * Return HTML for the table
+  * @return string
+  */
+  public function __toString()
+  {
+    return $this->getHtml();
+  }  
   
  /*
   * private
@@ -203,8 +218,19 @@ class Table {
    */
   private function formatValue($format, $val){
     if(empty($format)) return (string)$val;
-    if(preg_match('~(?<!\\\)%~',$format)){
-      return sprintf($format, $val);
+    if(is_callable($format)) {
+      //format contain a user-function
+      return $format($val);
+    }
+    if(is_string($format)){
+      if(preg_match('~(?<!\\\)%~',$format)){
+        return sprintf($format, $val);
+      }
+      $dt = date_create($val);
+      if($dt !== false) {
+        return $dt->format($format);
+      }
+      return (string)$val;
     }
     if($val instanceof dt) {
       return $val->formatL($format);
@@ -212,13 +238,20 @@ class Table {
     elseif($val instanceof DateTime) {
       return $val->format($format);
     }
-    $dt = date_create($val);
-    return $dt !== false ? $dt->format($format) : (string)$val;
+    return (string)$val;
   }
   
- 
   //alias htmlspecialchars UTF8
   private function quot($val) {
+    if(is_scalar($val) 
+        OR (is_object($val) AND method_exists($val,'__toString'))
+        OR $val === NULL
+      ) {
+      $val = (string)$val;
+    }
+    else {
+      $val = "obj ".get_class($val)."?";
+    }
     return htmlspecialchars($val,ENT_QUOTES,'UTF-8',false);
   }
 
@@ -232,13 +265,12 @@ class Table {
   */  
   private function cleanID($str) {
     return preg_replace_callback(
-      '/^[^a-z]|[^\w-:.]/i',
+      '/^[^a-z]|[^\w\-:.]/i',
       function($arr) {
         return 'x'.bin2hex($arr[0]) ;
       },
       $str
     );
   }
-
 
 }
