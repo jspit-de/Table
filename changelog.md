@@ -1,4 +1,6 @@
-# HTML table builder 
+# HTML table builder
+## Version 1.4 (2021-12-13)
+* checked for PHP 8.2
 
 ## Version 1.3 (2021-12-13)
 * create also from 1 dim Array with key=>value

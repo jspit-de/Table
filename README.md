@@ -36,25 +36,25 @@ http://jspit.de/check/phpcheck.table.php
 
 ### Requirements
 
-- PHP 5.6+, 7.x+
+- PHP 5.6 .. 8.2
 
-### Class-Info
+## Class-Info
 
 | Info | Value |
 | :--- | :---- |
 | Declaration | class Table |
-| File | Table.php |
-| Date/Time modify File | 2019-04-17 10:33:37 |
-| File-Size | 6679 Byte |
-| MD5 File | d15e1dd5fda12b4d08516dd2fc7ac486 |
-| Version | 1.0 |
-| Date | 2019-04-17 |
+| Datei | Table.php |
+| Date/Time modify File | 2023-04-16 11:15:58 |
+| File-Size | 7452 Byte |
+| MD5 File | d531c208b9a7bf2fb554d6e204c7bf18 |
+| Version | 1.4 |
+| Date | 2023-04-16 |
 
-### Public Methods
+## Public Methods
 
 | Methods and Parameter | Description/Comments |
 | :-------------------- | :------------------- |
-| public function __construct($data) | @param mixed $data : array, object, iterator |
+| final public function __construct($data) | @param mixed $data : array, object, iterator |
 | public static function create($data) | create a instance<br>@param mixed $data : 2 dim array, iterator or tableArray Instance<br>@return static instance of tableArray |
 | public function attribute($list) | set html-Attributes <br>@param string $list: css-class-name or attribute-list <br>@return $this |
 | public function title($title) | set titles for columns<br>@param mixed $title<br>$title: Table::KEY, Table::FIRSTLINE, array or string with comma as delimiter<br>@return $this |
@@ -63,8 +63,9 @@ http://jspit.de/check/phpcheck.table.php
 | public function colClassName($className) | @param string $className: className for Colums<br>@return $this |
 | public function rowClassName($className) | @param string $className: className for rows<br>@return $this |
 | public function getHtml() | render and get HTML<br>@return string : html |
+| public function __toString() | Return HTML for the table<br>@return string |
 
-### Constants
+## Constants
 
 | Declaration/Name | Value | Description/Comments |
 | :--------------- | :---- | :------------------- |

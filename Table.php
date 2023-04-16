@@ -2,10 +2,10 @@
 /**
 .---------------------------------------------------------------------------.
 |  class Table : HTML table builder                                         |
-|   Version: 1.3                                                            |
-|      Date: 2021-12-13                                                     |
+|   Version: 1.4                                                            |
+|      Date: 2023-04-16                                                     |
 | ------------------------------------------------------------------------- |
-| Copyright © 2019 Peter Junk                                               |
+| Copyright © 2019..2023 Peter Junk alias jspit                             |
 ' ------------------------------------------------------------------------- '
 | PHP : >= 5.6                                                              |
 ' ------------------------------------------------------------------------- '
@@ -28,7 +28,7 @@ class Table {
  /*
   * @param mixed $data : array, object, iterator
   */
-  public function __construct($data){
+  final public function __construct($data){
     if(is_object($data)) {
       if($data instanceof \Traversable) {
         $newData = [];
@@ -232,7 +232,7 @@ class Table {
       }
       return (string)$val;
     }
-    if($val instanceof dt) {
+    if($val instanceof \dt) {
       return $val->formatL($format);
     }
     elseif($val instanceof DateTime) {
